@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -22,7 +21,8 @@ public class TimerService extends Service {
     private static final String TAG = TimerService.class.getSimpleName();
 
     // Start and end times in milliseconds
-    private long startTime, endTime, pausedTime;
+    private long startTime;
+    private long endTime;
 
     // Is the service tracking time?
     private boolean isTimerRunning;
@@ -79,7 +79,7 @@ public class TimerService extends Service {
     public void startTimer() {
         if (!isTimerRunning) {
             SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-            endTime = prefs.getLong("end", System.currentTimeMillis() - endTime);
+            endTime = prefs.getLong("end", 0);
 
             startTime = System.currentTimeMillis() - endTime;
             isTimerRunning = true;
@@ -99,7 +99,7 @@ public class TimerService extends Service {
             SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putLong("end", endTime);
-            editor.putString("time",elapsedTime());
+            editor.putString("time", elapsedTime());
             editor.apply();
 
         } else {
@@ -126,10 +126,10 @@ public class TimerService extends Service {
                 (System.currentTimeMillis() - startTime) / 1000;
     }*/
     public String elapsedTime() {
-        pausedTime = endTime > startTime ? (endTime - startTime) / 1000 : (System.currentTimeMillis() - startTime) / 1000;
-        int hours = (int) (pausedTime) / 3600;
-        int minutes = (int) (pausedTime) / 60;
-        int seconds = (int) (pausedTime) % 60;
+        long time = endTime > startTime ? (endTime - startTime) / 1000 : (System.currentTimeMillis() - startTime) / 1000;
+        int hours = (int) (time) / 3600;
+        int minutes = (int) (time) / 60;
+        int seconds = (int) (time) % 60;
         return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
     }
 

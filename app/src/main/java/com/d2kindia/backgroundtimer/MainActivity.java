@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void updateUIStartRun() {
         mUpdateTimeHandler.sendEmptyMessage(MSG_UPDATE_TIME);
-        timerButton.setText("Stop");
+        timerButton.setText("Pause");
     }
 
     /**
